@@ -1,10 +1,11 @@
-#include <iostream>
-#include <string>
-#include <vector>
+#include <iostream> // Permite usar std::cin y std::coutpara la consola (entrada y salida)
+#include <string> // Permite manejar cadenas de texto (std::string)
+#include <sstream> // Permite tratar un texto como un flujo (stream) para separar letras o numeros por espacios
+#include <cctype> // Contiene funciones utiles para verificar caracteres, como isalpha() (si es letra) o isdigit() (si es numero)
+#include <limits> // Necesario para std::numeric_limits, que usamos para limpiar errores de la consola.
 #include <algorithm>
-#include <sstream>
-#include <cctype>
-#include <limits>
+#include <vector>
+
 
 using namespace std;
 
@@ -13,21 +14,34 @@ enum OpcMenu {infoMetod = 1, cifradoDescifrado, salir};
 enum MetodInfo{cesar1 = 1,morse1,traspo1,a1z26_1,atbash1,atras1};
 enum Cifrados {cesar2 = 1,morse2,traspo2,a1z26_2,atbash2,atras2};
 
-// Funcion para cifrar texto a A1Z26
+// Funcion para descifrar A1Z26 a texto
 string cifrarA1Z26(const string& txt) {
-    string result = "";
+    string result = ""; // Aqui guardamos el resultado final cifrado
+
+    // Recorremos cada letra del texto recibido usando el indice i
     for (size_t i = 0; i < txt.length(); ++i) {
-        char c = txt[i];
+        char c = txt[i]; // 'c' es el caracter actual que estamos analizando
+
+        // Si es una lera (mayuscula o minuscula)
         if (isalpha(c)) {
+            // Determinamos si la base es 'A' (65 en ASCII) o 'a' (97 en ASCII)
             char base = isupper(c) ? 'A' : 'a';
+
+            // Calculamos su posicion numerica> 'a' - 'a' + 1 = 1, 'b' - 'b' + 1 = 2, etc
             int num = (c - base) + 1;
+
+            // Convertimos ese numero a texto y le anadimos un espaciopara separarlos
             result += to_string(num) + " ";
+
+        // Si es un numero (digito) lo protegemos con la etiqueta [num: ]
         } else if (isdigit(c)) {
             result += "[num:" + string(1, c) + "] ";
+
+        // Si es un espacio o un simbolo especial se queda igual
         } else {
             result += c;
             if (c != ' ') {
-                result += " ";
+                result += " "; // Devolvemos la cadena cifrada completa
             }
         }
     }
@@ -37,31 +51,44 @@ string cifrarA1Z26(const string& txt) {
 // Funcion para descifrar A1Z26 a texto
 string descifrarA1Z26(const string& code) {
     string result = "";
+    // std::stringstream nos permite partir la cadena de texto usando los espacios como separadores
     stringstream ss(code);
     string token;
 
+    // Leemos elemento por elemento (token por token) separado por espacios
     while (ss >> token) {
+        // Si el token es nuestra etiqueta de numero protegido para descifrarlo de forma segura
         if (token.rfind("[num:", 0) == 0) {
-            char dig = token[5];
+            char dig = token[5]; // Extraemos el numero original que se estaba guardando adentro
             result += dig;
+
+        // Si es un numero cifrado normal
         } else {
             bool esNum = true;
             for (char c : token) {
                 if (!isdigit(c)) {
-                    esNum = false;
+                    esNum = false; // Comprobamos que todos los caracteres del token sean numeros
                     break;
                 }
             }
 
             if (esNum) {
-                int num = stoi(token);
+                int num = stoi(token); // Convertimos el exto a numero entero (por ejemplo: "12" a 12)
+
+                // Si esta en el rago de del abecedario (1 al 26)
                 if (num >= 1 && num <= 26) {
+                    // Convertimos el numero de vuelta a letra sumandoselo a 'A'
                     result += (char)('A' + num - 1);
+                } else {
+                    result += token; // Si esta fuera del rango, pasa igual
+                }
+            } else {
+                // Si es un simbolo suelto pasa igual, si es un guion bajo imprimir un espacio
+                if (token == "_") {
+                    result += " ";
                 } else {
                     result += token;
                 }
-            } else {
-                result += token;
             }
         }
     }
@@ -87,7 +114,7 @@ int main() {
 
     // VARIABLES PARA CIFRADO Y DESCIFRADO DE A1Z26
     int opc = 0;
-    bool avnzr = true;
+    bool avnzr = true; // Variable booleana para controlar cuando salir del Cifrado A1Z26
     int contC = 0;
     int contD = 0;
     bool conf = 0;
@@ -101,7 +128,7 @@ int main() {
 
     do {
         // MENU DE INICIO
-        cout << "CYPH3R (programa de cifrado y descifrado de mensajes)" << endl;
+        cout << "--- CYPH3R (programa de cifrado y descifrado de mensajes) ---" << endl;
         cout << "Menu" << endl;
         cout << "1. Informacion sobre los metodos de cifrado" << endl;
         cout << "2. Cifrar/Descifrar mensaje" << endl;
@@ -222,44 +249,48 @@ int main() {
                         break;}
                     case a1z26_2:
                         avnzr = true; // Reiniciamos para que funcione si vuelven a entrar
+                        // El bucle se repite mientras 'avnzr' sea 'true'
                         while (avnzr == true) {
                             cout << "--- Cifrado A1Z26 ---" << endl;
-                            cout << "0. Salir" << endl;
+                            cout << "0. Atras" << endl;
                             cout << "1. Cifrar texto" << endl;
                             cout << "2. Descifrar numeros" << endl;
                             cout << "Elige una opcion (0, 1 o 2): " << endl;
 
+                            // Si el usuario escribe una letra en lugar de un numero cin falla
                             if (!(cin >> opc)) {
                                 cout << "Error. Entrada invalida. Vuelvalo a intentar." << endl;
-                                cin.clear();
-                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                continue;
+                                cin.clear(); // Limpia el estado de error de la consola
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Descarta la entrada incorrecta del buffer
+                                continue; // Salta al siguiente ciclo del bucle para volver a preguntar
                             }
-                            cin.ignore();
 
+                            cin.ignore(); // Limpia el salto de linea pendiente despues de leer el numero de la opcion
+
+                            // Dependiendo de lo que elija el usuario, usamos un switch
                             switch (opc) {
                                 case 0: {
                                     cout << "Esta seguro de que quiere salir? (Si = 1/No = 0 o cualquier otra tecla)" << endl;
                                     cin >> conf;
                                     if (conf == 1) {
                                         cout << "Gracias por utilizar nuestro programa!" << endl;
-                                        avnzr = false;
+                                        avnzr = false; // Cambiamos a 'false' para romper el nucle y terminar el programa
                                     }
                                     break;
                                 }
                                 case 1: {
                                     cout << "Introduce el texto a cifrar: " << endl;
-                                    getline(cin, entr);
-                                    string cypher = cifrarA1Z26(entr);
+                                    getline(cin, entr); // Lee toda la linea incluyendo espacios
+                                    string cypher = cifrarA1Z26(entr); // Llamamos a nuestra funcion de cifrado
                                     cout << endl << "Resultado cifrado:" << endl << cypher << endl;
                                     contC++;
                                     cout << "Cantidad de mensajes cifrados: " << contC << endl << "Descifrados: " << contD << endl << "Total: " << contC + contD << endl;
                                     break;
                                 }
                                 case 2: {
-                                    cout << "Introduce el mensaje cifrado (numeros separados por espacios):" << endl;
-                                    getline(cin, entr);
-                                    string decypher = descifrarA1Z26(entr);
+                                    cout << "Introduce el codigo cifrado (numeros separados por espacios):" << endl;
+                                    getline(cin, entr); // Lee toda la linea incluyendo espacios
+                                    string decypher = descifrarA1Z26(entr); // Llamamos a nuestra funcion de descifrado
                                     cout << endl << "Resultado descifrado:" << endl << decypher << endl;
                                     contD++;
                                     cout << "Cantidad de mensajes cifrados: " << contC << endl << "Descifrados: " << contD << endl << "Total: " << contC + contD << endl;
@@ -272,6 +303,7 @@ int main() {
                             }
                         }
                         break;
+
                     case atbash2: { // Atbash actualizado correctamente
                         char s = 's';
                         cout << "Cifrado y Descifrado Atbash" << endl;
