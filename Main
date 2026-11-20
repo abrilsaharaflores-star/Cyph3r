@@ -338,7 +338,7 @@ int main() {
                                 }
                                 cout << palabra[i];
                             }
-                            cout << endl << endl; // Mejorar interfaz
+                            cout << "  " << endl; // Mejorar interfaz
 
                             if (cifrado == "1") {
                                 cout << "Si desea cifrar alguna otra palabra con Atbash ingrese s, sino ingrese cualquier otra letra: ";
@@ -348,7 +348,7 @@ int main() {
                                 cin >> s;
                             }
                             cin.ignore();
-                            cout << endl; // Mejorar iterfaz
+                            cout << " "<< endl; // Mejorar iterfaz
                         }
                         break;
                     }
