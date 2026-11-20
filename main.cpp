@@ -19,8 +19,8 @@ int main()
         for(int i = 0; i < phrase.length(); i ++) {
             if (phrase[i] < 'a' || phrase[i] > 'z'){
                 if (phrase[i]!=' ') {
-                    minusk = false; // si algún carácter es diferente de una letra minuscula se asigna valor falso
-                    break; // al detectar un solo carácter diferente de una letra minuscula, se sale del ciclo for
+                    minusk = false; // si algÃºn carÃ¡cter es diferente de una letra minuscula se asigna valor falso
+                    break; // al detectar un solo carÃ¡cter diferente de una letra minuscula, se sale del ciclo for
         }
             }
     }
