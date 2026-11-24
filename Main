@@ -14,6 +14,7 @@ enum Cifrados {cesar = 1,codMorse,traspo,a1z26,atbash,atras};
 int printMenu(string &user, int &usuario);
 
 void cifrMorse(const string (&morse)[26], const char (&abc)[26]);
+void cifrcesar(string phrase, int recorrido, bool minusk, int letra);
 void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s);
 string cifrarA1Z26(const string& txt);
 string descifrarA1Z26(const string& code);
@@ -48,7 +49,11 @@ int main() {
         int last = i;
         abc[i] = 'a' + static_cast<char>(last);
     }
-
+    //VARIABLES CESAR
+    string phrase = " ";
+    int recorrido = 0;
+    bool minusk = 1;
+    int letra;
 
     // VARIABLES PARA CIFRADO Y DESCIFRADO DE ATBASH
     string palabra;
@@ -152,7 +157,13 @@ int main() {
 
                 switch(cifrados){
                     case cesar:
+                        if (cifrado == "1") {
+                            cifrcesar(phrase, recorrido, minusk, letra);
+                        }
+                        else {
+
                         cout << "Trabajando en ello :)" << endl;
+                        }
                         break;
                     case codMorse:
                         if(cifrado == "1"){
@@ -455,4 +466,51 @@ void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &c
 
         cout << " "<< endl;
 }
+}
+
+void cifrcesar (string phrase,int recorrido, bool minusk, int letra) {
+    cout << "Ingrese mensaje a cifrar en minusculas: ";
+    getline(cin,phrase);
+
+    do {
+        minusk = true;
+        //Se recorre todo el string mediante indices, para corroborar que solo se ingresaron minusculas
+        for(int i = 0; i < phrase.length(); i ++) {
+            if (phrase[i] < 'a' || phrase[i] > 'z'){
+                if (phrase[i]!=' ') {
+                    minusk = false; // si algún carácter es diferente de una letra minuscula se asigna valor falso
+                    break; // al detectar un solo carácter diferente de una letra minuscula, se sale del ciclo for
+        }
+            }
+    }
+
+        if (minusk == false){
+        cout << "Ingrese un mensaje en minusculas: " << endl; // Solicita nuevamente el mensaje
+        getline(cin,phrase);
+        }
+      } while (minusk == false);
+
+    cout << "Ingrese numero de caracteres a recorrer (de 1 a 25): ";
+    cin >> recorrido;
+
+    while (recorrido < 1 || recorrido > 25){
+        cout << "Ingrese un numero en el rango: ";
+        cin >> recorrido;
+      }
+
+    for (int i = 0; i < phrase.length(); i ++) {
+        if (phrase[i] != ' ') {
+            letra = phrase[i] + recorrido;
+
+            if (letra > 122) {
+                letra = letra - 26;
+            }
+
+        phrase[i] = letra;
+      }
+      cout << phrase[i];
+    }
+
+
+    cin.ignore();
 }
