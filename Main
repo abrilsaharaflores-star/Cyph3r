@@ -2,7 +2,6 @@
 #include <string> // Permite manejar cadenas de texto (std::string)
 #include <sstream> // Permite tratar un texto como un flujo (stream) para separar letras o numeros por espacios
 #include <cctype> // Contiene funciones utiles para verificar caracteres, como isalpha() (si es letra) o isdigit() (si es numero)
-#include <limits> // Necesario para std::numeric_limits, que usamos para limpiar errores de la consola.
 #include <algorithm>
 #include <vector>
 
@@ -348,19 +347,19 @@ string cifrarA1Z26(const string& txt) {
             // Calculamos su posicion numerica> 'a' - 'a' + 1 = 1, 'b' - 'b' + 1 = 2, etc
             int num = (c - base) + 1;
 
-            // Convertimos ese numero a texto y le anadimos un espaciopara separarlos
+            // Convertimos ese numero a texto y le anadimos un espacio para separarlos
             result += to_string(num) + " ";
 
         // Si es un numero (digito) lo protegemos con la etiqueta [num: ]
         } else if (isdigit(c)) {
             result += "[num:" + string(1, c) + "] ";
 
-        // Si es un espacio o un simbolo especial se queda igual
+        // Si es un espacio, lo representamos como un "_", si es un simbolo especial se queda igual
+        } else if (c == ' ') {
+            result += "_ ";
         } else {
             result += c;
-            if (c != ' ') {
-                result += " "; // Devolvemos la cadena cifrada completa
-            }
+            result += " ";
         }
     }
     return result;
@@ -394,7 +393,7 @@ int printMenu(string user);
             if (esNum) {
                 int num = stoi(token); // Convertimos el exto a numero entero (por ejemplo: "12" a 12)
 
-                // Si esta en el rago de del abecedario (1 al 26)
+                // Si esta en el rango del abecedario (1 al 26)
                 if (num >= 1 && num <= 26) {
                     // Convertimos el numero de vuelta a letra sumandoselo a 'A'
                     result += (char)('A' + num - 1);
