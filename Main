@@ -52,7 +52,7 @@ int main() {
 
     // VARIABLES PARA CIFRADO Y DESCIFRADO DE ATBASH
     string palabra;
-    char s = 's';
+    char s = "s";
      // Funciona para elegir cual funcion
     bool minusc = 0;
 
