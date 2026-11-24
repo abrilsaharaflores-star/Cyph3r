@@ -14,7 +14,7 @@ enum Cifrados {cesar = 1,codMorse,traspo,a1z26,atbash,atras};
 int printMenu(string &user, int &usuario);
 
 void cifrMorse(const string (&morse)[26], const char (&abc)[26]);
-
+void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s);
 string cifrarA1Z26(const string& txt);
 string descifrarA1Z26(const string& code);
 
@@ -217,71 +217,9 @@ int main() {
                             break;
 
                     case atbash: { // Atbash actualizado correctamente
-                        cout << " " << endl;
-                        cout << "---Cifrado y Descifrado Atbash---" << endl;
-
-                        // Se utiliza para imprimir, si "cifrar" o "descifrar", segun el metodo ingresado por el usuario
-                        while (s == 's') {
-                            if (cifrado == "1") {
-                                cout << "Ingrese mensaje a cifrar en minusculas: ";
-                                getline(cin, palabra);
-                            } else {
-                                cout << "Ingrese mensaje a descifrar en minusculas: ";
-                                getline(cin, palabra);
-                            }
-
-                            // Se evalua que todos los caracteres del string palabra sean minusculas
-                            do {
-                                minusc = true;
-                                // Se recorre todo el string mediante indices, para corroborar que solo se ingresaron minusculas
-                                for(int i = 0; i < palabra.length(); i++) {
-                                    if (palabra[i] < 'a' || palabra[i] > 'z'){
-                                        if (palabra[i] != ' ') {
-                                            minusc = false;
-                                            // Si algun caracter es diferente de una letra minuscula se asigna valor falso
-                                            break; // Al detectar un solo caracter diferente a una letra minuscula, se sale del ciclo for
-                                        }
-                                    }
-                                }
-
-                                if (minusc == false){
-                                    cout << "Ingrese un mensaje en minusculas: " << endl;
-                                    // Solicita nuevamente el mensaje
-                                    getline(cin, palabra);
-                                }
-
-                            } while (minusc == false);
-
-                            // Personaliza el mensaje segun el metodo elegido
-                            if (cifrado == "1"){
-                                cout << "Mensaje cifrado: ";
-                                contC ++;
-                            } else {
-                                cout << "Mensaje descifrado: ";
-                                contD ++;
-                            }
-
-                            // Se utiliza el codigo ASCII para imprimir la letra contraria
-                            for (int i = 0; i < palabra.length(); i++) {
-                                if(palabra[i] != ' '){
-                                    palabra[i] = 'z' - (palabra[i] - 'a');
-                                }
-                                cout << palabra[i];
-                            }
-                            cout << endl << endl; // Mejorar interfaz
-
-                            if (cifrado == "1") {
-                                cout << "Si desea cifrar alguna otra palabra con Atbash ingrese s, sino ingrese cualquier otra letra: ";
-                                cin >> s;
-                            } else {
-                                cout << "Si desea descifrar alguna otra palabra con Atbash ingrese s, sino ingrese cualquier otra letra: ";
-                                cin >> s;
-                            }
-                            cin.ignore();
-                            cout << endl; // Mejorar iterfaz
+                            cifratbash(palabra,cifrado,minusc,contC,contD,s);
+                            break;
                         }
-                        break;
-                    }
                     case atras:
                         break;
                 }
@@ -455,4 +393,66 @@ void cifrMorse(const string (&morse)[26], const char (&abc)[26]){
         }
     }
         cout << "Mensaje descifrado: " << texto;
+}
+void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s) {
+// Se evalua que todos los caracteres del string palabra sean minusculas
+    cout << " " << endl;
+    cout << "---Cifrado y Descifrado Atbash---" << endl;
+    s = "s";
+    // Se utiliza para imprimir, si "cifrar" o "descifrar", segun el metodo ingresado por el usuario
+    while (s == "s") {
+        if (cifrado == "1") {
+            cout << "Ingrese mensaje a cifrar en minusculas: ";
+    }   else {
+            cout << "Ingrese mensaje a descifrar en minusculas: ";
+    }
+    getline(cin, palabra);
+    do {
+        minusc = true;
+        // Se recorre todo el string mediante indices, para corroborar que solo se ingresaron minusculas
+        for(int i = 0; i < palabra.length(); i++) {
+        if (palabra[i] < 'a' || palabra[i] > 'z'){
+        if (palabra[i] != ' ') {
+        minusc = false;
+        // Si algun caracter es diferente de una letra minuscula se asigna valor falso
+        break; // Al detectar un solo caracter diferente a una letra minuscula, se sale del ciclo for
+        }
+             }
+                  }
+
+        if (minusc == false){
+            cout << "Ingrese un mensaje en minusculas: " << endl;
+            // Solicita nuevamente el mensaje
+            getline(cin, palabra);
+            }
+
+            } while (minusc == false);
+
+            // Personaliza el mensaje segun el metodo elegido
+                if (cifrado == "1"){
+                    cout << "Mensaje cifrado: ";
+                    contC ++;
+            }   else {
+                    cout << "Mensaje descifrado: ";
+                    contD ++;
+                            }
+            // Se utiliza el codigo ASCII para imprimir la letra contraria
+            for (int i = 0; i < palabra.length(); i++) {
+                if(palabra[i] != ' '){
+                    palabra[i] = 'z' - (palabra[i] - 'a');
+                }
+                cout << palabra[i];
+            }
+            cout << "  " << endl; // Mejorar interfaz
+
+
+            if (cifrado == "1") {
+                cout << "Si desea cifrar alguna otra palabra con Atbash ingrese s, sino ingrese cualquier otro caracter: ";
+        }   else {
+                cout << "Si desea descifrar alguna otra palabra con Atbash ingrese s, sino ingrese cualquier otro caracter: ";
+        }
+        getline(cin, s);
+
+        cout << " "<< endl;
+}
 }
