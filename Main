@@ -11,13 +11,27 @@ using namespace std;
 enum OpcMenu {infoMetod = 1, cifradoDescifrado, salir};
 enum Cifrados {cesar = 1,codMorse,traspo,a1z26,atbash,atras};
 
+//Encargado: Alef Luna
 int printMenu(string &user, int &usuario);
 
-void cifrMorse(const string (&morse)[26], const char (&abc)[26]);
+//Encargado: Yulehimy Martinez
+int printMetod(int &metod);
+
+//Encargado: Abril Flores
 void cifrcesar(string phrase, int recorrido, bool minusk, int letra);
-void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s);
+
+//Encargado: Alef Luna
+void cifrMorse(const string (&morse)[26], const char (&abc)[26]);
+
+//Encargado: Yulehimy Martinez
+void metTranspo(string mensaje, string cifrado);
+
+//Encargado: Gabriel Ibarra
 string cifrarA1Z26(const string& txt);
 string descifrarA1Z26(const string& code);
+
+//Encargado: Abril Flores
+void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s);
 
 
 int main() {
@@ -34,6 +48,12 @@ int main() {
     string cifrado = "0";
     string repetir = "0";
 
+    //VARIABLES CESAR
+    string phrase = " ";
+    int recorrido = 0;
+    bool minusk = 1;
+    int letra;
+
     //VARIABLES CODIGO MORSE
     string morse[26];
     morse[0]=".-"; morse[1]="-..."; morse[2]="-.-."; morse[3]="-.."; morse[4]=".";
@@ -49,11 +69,7 @@ int main() {
         int last = i;
         abc[i] = 'a' + static_cast<char>(last);
     }
-    //VARIABLES CESAR
-    string phrase = " ";
-    int recorrido = 0;
-    bool minusk = 1;
-    int letra;
+
 
     // VARIABLES PARA CIFRADO Y DESCIFRADO DE ATBASH
     string palabra;
@@ -78,6 +94,7 @@ int main() {
         // MENU DE INICIO
         printMenu(user,usuario);
         OpcMenu menu = static_cast<OpcMenu>(usuario); //conversion de variable int al enum.
+
         //Opciones del menu
         switch(menu){
             case infoMetod:{
@@ -133,26 +150,11 @@ int main() {
                 cout << "Deseas cifrar (1) o descifrar (0)? ";
                 getline(cin, cifrado);
 
-            while (cifrado != "1" && cifrado != "0") {
-                cout << "Dato invalido. Ingresa 1 para cifrar o 0 para descifrar: ";
-                getline(cin, cifrado);
-            }
-                //eleccion de cifrado descifrado
-                cout << " " << endl;
-                cout << "Cifrados disponibles" << endl;
-                cout << "1. Cifrado Cesar" << endl;
-                cout << "2. Codigo Morse" << endl;
-                cout << "3. Cifrado por Transposicion" << endl;
-                cout << "4. Cifrado A1Z26" << endl;
-                cout << "5. Cifrado Atbash" << endl;
-                cout << "6. Atras" << endl;
-                cout << "Seleccione la opcion que desea visualizar: ";
-                getline(cin, metodos);
-                while(metodos != "1" && metodos != "2" && metodos != "3" && metodos != "4" && metodos != "5" && metodos != "6"){
-                    cout << "Dato invalido. Ingrese nuevamente: ";
-                    getline(cin, metodos);
+                while (cifrado != "1" && cifrado != "0") {
+                    cout << "Dato invalido. Ingresa 1 para cifrar o 0 para descifrar: ";
+                    getline(cin, cifrado);
                 }
-                metod = stoi(metodos);
+                printMetod(metod);
                 Cifrados cifrados = static_cast<Cifrados>(metod);
 
                 switch(cifrados){
@@ -172,33 +174,20 @@ int main() {
                             //decifrMorse(morse,abc);
                         }
                         break;
-                    case traspo:
-                        {
-                        cout << " " << endl;
-                        cout << "---Cifrado y descifrado por transposicion---" << endl;
-                        cout <<"Escribe una palabra o frase:";
-                        getline(cin,frase);//lee todo
+                    case traspo:{
+                        string repetir;
+                        do{
+                            cout << " " << endl;
+                            cout << "---Cifrado y descifrado por transposicion---" << endl;
+                            cout <<"Escribe una palabra o frase:";
+                            getline(cin,frase);//lee todo
+                            metTranspo(frase,cifrado);
+                            cout << "\n¿Quiere volver a cifrar o descifrar? (s/n): ";
+                            getline(cin,repetir);
 
-                        stringstream ss (frase); //convertir variable a frase
-                        while (ss >> word){
-                            lista.push_back(word); //agregar las palabras en formato de lista
 
-                        }
+                        }while(repetir == "s" || repetir == "S");
 
-                        if(cifrado == "1" ){
-                        cout << "\ncifrado: ";
-                        contC ++;
-                        }else{
-                        cout << "\ndescifrado: ";
-                        contD ++;
-                        }
-
-                        for( int i = 0 ;i<lista.size (); i++){
-                            reverse(lista[i].begin(), lista [i].end());//empieza y termina la palabra y reverse voltea alrevez las palabras
-                            cout <<lista [i] <<" ";
-                        }
-                        cout << " " << endl;
-                        lista.clear();
                         break;}
                     case a1z26:
                         avnzr = true; // Reiniciamos para que funcione si vuelven a entrar
@@ -228,9 +217,8 @@ int main() {
                             break;
 
                     case atbash: { // Atbash actualizado correctamente
-                            cifratbash(palabra,cifrado,minusc,contC,contD,s);
-                            break;
-                        }
+                        cifratbash(palabra,cifrado,minusc,contC,contD,s);
+                        break;}
                     case atras:
                         break;
                 }
@@ -281,85 +269,72 @@ int printMenu(string &user, int &usuario){
     return usuario;
 }
 
-string cifrarA1Z26(const string& txt) {
-    string result = ""; // Aqui guardamos el resultado final cifrado
+int printMetod(int &metod){
+    string metodos;
+    cout << "\n---Metodos de cifrado disponibles---" << endl;
+    cout << "1. Cifrado Cesar " << endl;
+    cout << "2. Codigo Morse" << endl;
+    cout << "3. Cifrado por Transposicion" << endl;
+    cout << "4. Cifrado A1Z26" << endl;
+    cout << "5. Cifrado Atbash" << endl;
+    cout << "6. Atras" << endl;
+    cout << "Seleccione el metodo que desea utilizar: ";
+    getline(cin, metodos);
 
-    // Recorremos cada letra del texto recibido usando el indice i
-    for (size_t i = 0; i < txt.length(); ++i) {
-        char c = txt[i]; // 'c' es el caracter actual que estamos analizando
-
-        // Si es una lera (mayuscula o minuscula)
-        if (isalpha(c)) {
-            // Determinamos si la base es 'A' (65 en ASCII) o 'a' (97 en ASCII)
-            char base = isupper(c) ? 'A' : 'a';
-
-            // Calculamos su posicion numerica> 'a' - 'a' + 1 = 1, 'b' - 'b' + 1 = 2, etc
-            int num = (c - base) + 1;
-
-            // Convertimos ese numero a texto y le anadimos un espacio para separarlos
-            result += to_string(num) + " ";
-
-        // Si es un numero (digito) lo protegemos con la etiqueta [num: ]
-        } else if (isdigit(c)) {
-            result += "[num:" + string(1, c) + "] ";
-
-        // Si es un espacio, lo representamos como un "_", si es un simbolo especial se queda igual
-        } else if (c == ' ') {
-            result += "_ ";
-        } else {
-            result += c;
-            result += " ";
-        }
+    while (metodos != "1" && metodos != "2" && metodos != "3" &&
+          metodos != "4" && metodos != "5" && metodos != "6"){
+            cout << "Dato invalido.Ingrese nuevamente: ";
+            getline(cin, metodos);
     }
-    return result;
+    metod = stoi(metodos);
+    return metod;
 }
 
-string descifrarA1Z26(const string& code) {
+void cifrcesar (string phrase,int recorrido, bool minusk, int letra) {
+    cout << "Ingrese mensaje a cifrar en minusculas: ";
+    getline(cin,phrase);
 
-int printMenu(string user);
-    string result = "";
-    // std::stringstream nos permite partir la cadena de texto usando los espacios como separadores
-    stringstream ss(code);
-    string token;
-
-    // Leemos elemento por elemento (token por token) separado por espacios
-    while (ss >> token) {
-        // Si el token es nuestra etiqueta de numero protegido para descifrarlo de forma segura
-        if (token.rfind("[num:", 0) == 0) {
-            char dig = token[5]; // Extraemos el numero original que se estaba guardando adentro
-            result += dig;
-
-        // Si es un numero cifrado normal
-        } else {
-            bool esNum = true;
-            for (char c : token) {
-                if (!isdigit(c)) {
-                    esNum = false; // Comprobamos que todos los caracteres del token sean numeros
-                    break;
-                }
-            }
-
-            if (esNum) {
-                int num = stoi(token); // Convertimos el exto a numero entero (por ejemplo: "12" a 12)
-
-                // Si esta en el rango del abecedario (1 al 26)
-                if (num >= 1 && num <= 26) {
-                    // Convertimos el numero de vuelta a letra sumandoselo a 'A'
-                    result += (char)('A' + num - 1);
-                } else {
-                    result += token; // Si esta fuera del rango, pasa igual
-                }
-            } else {
-                // Si es un simbolo suelto pasa igual, si es un guion bajo imprimir un espacio
-                if (token == "_") {
-                    result += " ";
-                } else {
-                    result += token;
-                }
-            }
+    do {
+        minusk = true;
+        //Se recorre todo el string mediante indices, para corroborar que solo se ingresaron minusculas
+        for(int i = 0; i < phrase.length(); i ++) {
+            if (phrase[i] < 'a' || phrase[i] > 'z'){
+                if (phrase[i]!=' ') {
+                    minusk = false; // si algún carácter es diferente de una letra minuscula se asigna valor falso
+                    break; // al detectar un solo carácter diferente de una letra minuscula, se sale del ciclo for
         }
+            }
     }
-    return result;
+
+        if (minusk == false){
+        cout << "Ingrese un mensaje en minusculas: " << endl; // Solicita nuevamente el mensaje
+        getline(cin,phrase);
+        }
+      } while (minusk == false);
+
+    cout << "Ingrese numero de caracteres a recorrer (de 1 a 25): ";
+    cin >> recorrido;
+
+    while (recorrido < 1 || recorrido > 25){
+        cout << "Ingrese un numero en el rango: ";
+        cin >> recorrido;
+      }
+
+    for (int i = 0; i < phrase.length(); i ++) {
+        if (phrase[i] != ' ') {
+            letra = phrase[i] + recorrido;
+
+            if (letra > 122) {
+                letra = letra - 26;
+            }
+
+        phrase[i] = letra;
+      }
+      cout << phrase[i];
+    }
+
+
+    cin.ignore();
 }
 
 void cifrMorse(const string (&morse)[26], const char (&abc)[26]){
@@ -405,6 +380,114 @@ void cifrMorse(const string (&morse)[26], const char (&abc)[26]){
     }
         cout << "Mensaje descifrado: " << texto;
 }
+
+void metTranspo(string frase, string cifrado){
+    vector<string> lista;
+    stringstream ss(frase);
+    string word;
+
+    //Se separa la frase en palabras
+    while (ss >> word){
+        lista.push_back(word);
+
+    }
+
+    if(cifrado == "1" ){
+        cout << "\ncifrado: ";
+        }else{
+            cout << "\ndescifrado: ";
+        }
+
+    //invierte palabras del vector
+    for (int i = 0; i < lista.size(); i++){
+        reverse(lista[i].begin(), lista[i].end());
+        cout << lista[i] << " ";
+    }
+    cout << " " << endl;
+    lista.clear();
+}
+
+string cifrarA1Z26(const string& txt) {
+    string result = ""; // Aqui guardamos el resultado final cifrado
+
+    // Recorremos cada letra del texto recibido usando el indice i
+    for (size_t i = 0; i < txt.length(); ++i) {
+        char c = txt[i]; // 'c' es el caracter actual que estamos analizando
+
+        // Si es una lera (mayuscula o minuscula)
+        if (isalpha(c)) {
+            // Determinamos si la base es 'A' (65 en ASCII) o 'a' (97 en ASCII)
+            char base = isupper(c) ? 'A' : 'a';
+
+            // Calculamos su posicion numerica> 'a' - 'a' + 1 = 1, 'b' - 'b' + 1 = 2, etc
+            int num = (c - base) + 1;
+
+            // Convertimos ese numero a texto y le anadimos un espaciopara separarlos
+            result += to_string(num) + " ";
+
+        // Si es un numero (digito) lo protegemos con la etiqueta [num: ]
+        } else if (isdigit(c)) {
+            result += "[num:" + string(1, c) + "] ";
+
+        // Si es un espacio o un simbolo especial se queda igual
+        } else {
+            result += c;
+            if (c != ' ') {
+                result += " "; // Devolvemos la cadena cifrada completa
+            }
+        }
+    }
+    return result;
+}
+
+string descifrarA1Z26(const string& code) {
+
+int printMenu(string user);
+    string result = "";
+    // std::stringstream nos permite partir la cadena de texto usando los espacios como separadores
+    stringstream ss(code);
+    string token;
+
+    // Leemos elemento por elemento (token por token) separado por espacios
+    while (ss >> token) {
+        // Si el token es nuestra etiqueta de numero protegido para descifrarlo de forma segura
+        if (token.rfind("[num:", 0) == 0) {
+            char dig = token[5]; // Extraemos el numero original que se estaba guardando adentro
+            result += dig;
+
+        // Si es un numero cifrado normal
+        } else {
+            bool esNum = true;
+            for (char c : token) {
+                if (!isdigit(c)) {
+                    esNum = false; // Comprobamos que todos los caracteres del token sean numeros
+                    break;
+                }
+            }
+
+            if (esNum) {
+                int num = stoi(token); // Convertimos el exto a numero entero (por ejemplo: "12" a 12)
+
+                // Si esta en el rago de del abecedario (1 al 26)
+                if (num >= 1 && num <= 26) {
+                    // Convertimos el numero de vuelta a letra sumandoselo a 'A'
+                    result += (char)('A' + num - 1);
+                } else {
+                    result += token; // Si esta fuera del rango, pasa igual
+                }
+            } else {
+                // Si es un simbolo suelto pasa igual, si es un guion bajo imprimir un espacio
+                if (token == "_") {
+                    result += " ";
+                } else {
+                    result += token;
+                }
+            }
+        }
+    }
+    return result;
+}
+
 void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s) {
 // Se evalua que todos los caracteres del string palabra sean minusculas
     cout << " " << endl;
@@ -466,51 +549,4 @@ void cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &c
 
         cout << " "<< endl;
 }
-}
-
-void cifrcesar (string phrase,int recorrido, bool minusk, int letra) {
-    cout << "Ingrese mensaje a cifrar en minusculas: ";
-    getline(cin,phrase);
-
-    do {
-        minusk = true;
-        //Se recorre todo el string mediante indices, para corroborar que solo se ingresaron minusculas
-        for(int i = 0; i < phrase.length(); i ++) {
-            if (phrase[i] < 'a' || phrase[i] > 'z'){
-                if (phrase[i]!=' ') {
-                    minusk = false; // si algún carácter es diferente de una letra minuscula se asigna valor falso
-                    break; // al detectar un solo carácter diferente de una letra minuscula, se sale del ciclo for
-        }
-            }
-    }
-
-        if (minusk == false){
-        cout << "Ingrese un mensaje en minusculas: " << endl; // Solicita nuevamente el mensaje
-        getline(cin,phrase);
-        }
-      } while (minusk == false);
-
-    cout << "Ingrese numero de caracteres a recorrer (de 1 a 25): ";
-    cin >> recorrido;
-
-    while (recorrido < 1 || recorrido > 25){
-        cout << "Ingrese un numero en el rango: ";
-        cin >> recorrido;
-      }
-
-    for (int i = 0; i < phrase.length(); i ++) {
-        if (phrase[i] != ' ') {
-            letra = phrase[i] + recorrido;
-
-            if (letra > 122) {
-                letra = letra - 26;
-            }
-
-        phrase[i] = letra;
-      }
-      cout << phrase[i];
-    }
-
-
-    cin.ignore();
 }
