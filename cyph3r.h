@@ -16,7 +16,7 @@ int printMetod(int &metod);
 void cifrcesar(string phrase, int recorrido, bool minusk, int letra);
 
 //Encargado: Alef Luna
-void cifrMorse(const string (&morse)[26], const char (&abc)[26]);
+void codeMorse(const string &cifrado);
 
 //Encargado: Yulehimy Martinez
 void metTranspo(string mensaje, string cifrado);
