@@ -59,8 +59,8 @@ void cyph3r::cifrcesar (string phrase,int recorrido, bool minusk, int letra) {
         for(int i = 0; i < phrase.length(); i ++) {
             if (phrase[i] < 'a' || phrase[i] > 'z'){
                 if (phrase[i]!=' ') {
-                    minusk = false; // si alg˙n car·cter es diferente de una letra minuscula se asigna valor falso
-                    break; // al detectar un solo car·cter diferente de una letra minuscula, se sale del ciclo for
+                    minusk = false; // si alg√∫n car√°cter es diferente de una letra minuscula se asigna valor falso
+                    break; // al detectar un solo car√°cter diferente de una letra minuscula, se sale del ciclo for
         }
             }
     }
@@ -96,48 +96,126 @@ void cyph3r::cifrcesar (string phrase,int recorrido, bool minusk, int letra) {
     cin.ignore();
 }
 
-void cyph3r::cifrMorse(const string (&morse)[26], const char (&abc)[26]){
-    string msj;
-    string texto;
-    char letra;
-    bool pass = false;
-    cout << "CODIGO MORSE" << endl;
-    cout << "INSTRUCCIONES" << endl;
-    cout << "Escriba el texto que desee cifrar utilizando solo minusculas. " << endl;
-    cout << "No se aceptan acentos simbolos o cualquier otro signo de puntuacion." << endl;
-    cout << "Ingrese mensaje a cifrar: ";
-    getline(cin,msj);
-    while(pass == false){
-        pass = true;
-        for(int i = 0; i < msj.size(); i++){
-            if(msj[i] != ' ' && (msj[i] < 'a' || msj[i] > 'z')){
-                pass = false;
-                break;
-            }
-        }
-        if(pass == false) {
-            cout << "Dato invalido. Recuerde utilizar solo minusculas: ";
-            getline(cin,msj);
-        }
+void cyph3r::codeMorse(const string &cifrado){
+    string morse[26];
+    morse[0]=".-"; morse[1]="-..."; morse[2]="-.-."; morse[3]="-.."; morse[4]=".";
+    morse[5]="..-."; morse[6]="--."; morse[7]="...."; morse[8]=".."; morse[9]=".---";
+    morse[10]="-.-"; morse[11]=".-.."; morse[12]="--"; morse[13]="-."; morse[14]="---";
+    morse[15]=".--."; morse[16]="--.-"; morse[17]=".-."; morse[18]="..."; morse[19]="-";
+    morse[20]="..-"; morse[21]="...-"; morse[22]=".--"; morse[23]="-..-"; morse[24]="-.--";
+    morse[25]="--..";
+
+    //Arreglo de letras
+    char abc[26];
+    for(int i = 0; i < 26; i++){
+        int last = i;
+        abc[i] = 'a' + static_cast<char>(last);
     }
 
-    for(int i = 0; i < msj.size(); i++){
-        letra = msj[i];
-        for(int j = 0; j < 26; j++){
-            if(letra == abc[j]){
-                texto = texto + morse[j];
-                texto.push_back(' ');
-                break;
-            }
-            if(letra == ' '){
-                if(texto.size() >= 2 && texto[texto.size() - 2] != '/'){
-                    texto = texto + "/ ";
+    if(cifrado == "1"){
+        string msj;
+        string texto;
+        char letra;
+        bool pass = false;
+        cout << "CODIGO MORSE" << endl;
+        cout << "INSTRUCCIONES" << endl;
+        cout << "Escriba el texto que desee cifrar utilizando solo minusculas. " << endl;
+        cout << "No se aceptan acentos simbolos o cualquier otro signo de puntuacion." << endl;
+        cout << "Ingrese mensaje a cifrar: ";
+        getline(cin,msj);
+        while(pass == false){
+            pass = true;
+            for(int i = 0; i < msj.size(); i++){
+                if(msj[i] != ' ' && (msj[i] < 'a' || msj[i] > 'z')){
+                    pass = false;
                     break;
                 }
             }
+            if(pass == false) {
+                cout << "Dato invalido. Recuerde utilizar solo minusculas: ";
+                getline(cin,msj);
+            }
+        }
+
+        for(int i = 0; i < msj.size(); i++){
+            letra = msj[i];
+            for(int j = 0; j < 26; j++){
+                if(letra == abc[j]){
+                    texto = texto + morse[j];
+                    texto.push_back(' ');
+                    break;
+                }
+                if(letra == ' '){
+                    if(texto.size() >= 2 && texto[texto.size() - 2] != '/'){
+                        texto = texto + "/ ";
+                        break;
+                    }
+                }
+            }
+        }
+        cout << "Mensaje descifrado: " << texto;
+    } else {
+        string tken;
+        vector<string> msjD;
+        vector<string>msjC;
+        string temp;
+        bool invalid = true;
+
+        //Opcion de cifrado
+        cout << "CODIGO MORSE" << endl;
+        cout << "INSTRUCCIONES" << endl;
+        cout << "Escriba el mensaje cifrado en Codigo Morse. " << endl;
+        cout << "Recuerde dejar espacio entre cada letra y use ( / ) entre cada palabra" << endl;
+        cout << "Ejemplo: hola mundo" << endl << "[.... --- .-.. .- / -- ..- -. -.. ---]" << endl;
+        cout << "Ingrese mensaje a descifrar: ";
+        getline(cin,temp);
+
+        while(invalid == true){
+            stringstream ss(temp);
+
+            while(ss >> tken){
+                msjC.push_back(tken);
+            }
+
+            if(msjC.empty()){
+            cout << "Entrada vacia. Ingrese el mensaje nuevamente: ";
+            getline(cin, temp);
+            continue;
+        }
+
+        for(int i = 0; i < msjC.size(); i++){ //token de mensaje
+            invalid = true;
+            if(msjC[i] == "/" && i != 0){
+                msjD.push_back(" ");
+                invalid = false;
+            } else {
+                for(int j = 0; j < 26; j++){ //revisa el arreglo Morse
+                    if(msjC[i] == morse[j]){
+                        msjD.push_back(string(1, abc[j]));
+                        invalid = false;
+                        break;
+                    }
+                }
+            }
+
+            if(invalid == true){
+                msjC.clear();
+                msjD.clear();
+                cout << "Mensaje invalido. No se aceptan letras, numeros o simbolos y compruebe que el codigo morse sea correcto" << endl;
+                cout << "Ingrese el mensaje nuevamente: ";
+                getline(cin, temp);
+                break;
+            }
         }
     }
-        cout << "Mensaje descifrado: " << texto;
+
+    cout << "Mensaje descifrado: ";
+    for(int i = 0; i < msjD.size(); i++){
+        cout << msjD[i];
+    }
+    cout << endl;
+
+    }
 }
 
 void cyph3r::metTranspo(string frase, string cifrado){
