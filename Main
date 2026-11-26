@@ -33,22 +33,6 @@ int main() {
     bool minusk = 1;
     int letra;
 
-    //VARIABLES CODIGO MORSE
-    string morse[26];
-    morse[0]=".-"; morse[1]="-..."; morse[2]="-.-."; morse[3]="-.."; morse[4]=".";
-    morse[5]="..-."; morse[6]="--."; morse[7]="...."; morse[8]=".."; morse[9]=".---";
-    morse[10]="-.-"; morse[11]=".-.."; morse[12]="--"; morse[13]="-."; morse[14]="---";
-    morse[15]=".--."; morse[16]="--.-"; morse[17]=".-."; morse[18]="..."; morse[19]="-";
-    morse[20]="..-"; morse[21]="...-"; morse[22]=".--"; morse[23]="-..-"; morse[24]="-.--";
-    morse[25]="--..";
-
-    //Arreglo de letras
-    char abc[26];
-    for(int i = 0; i < 26; i++){
-        int last = i;
-        abc[i] = 'a' + static_cast<char>(last);
-    }
-
 
     // VARIABLES PARA CIFRADO Y DESCIFRADO DE ATBASH
     string palabra;
@@ -147,11 +131,7 @@ int main() {
                         }
                         break;
                     case codMorse:
-                        if(cifrado == "1"){
-                            cyph3r::cifrMorse(morse,abc);
-                        } else {
-                            //decifrMorse(morse,abc);
-                        }
+                        cyph3r::codeMorse(cifrado);
                         break;
                     case traspo:{
                         string repetir;
