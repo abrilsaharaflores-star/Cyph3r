@@ -325,6 +325,9 @@ string cyph3r::descifrarA1Z26(const string& code) {
 }
 
 void cyph3r::cifratbash (string palabra, string cifrado, bool minusc, int &contC, int &contD, string s) {
+vector<string> fila;
+string ms;
+
 // Se evalua que todos los caracteres del string palabra sean minusculas
     cout << " " << endl;
     cout << "---Cifrado y Descifrado Atbash---" << endl;
@@ -337,6 +340,7 @@ void cyph3r::cifratbash (string palabra, string cifrado, bool minusc, int &contC
             cout << "Ingrese mensaje a descifrar en minusculas: ";
     }
     getline(cin, palabra);
+
     do {
         minusc = true;
         // Se recorre todo el string mediante indices, para corroborar que solo se ingresaron minusculas
@@ -349,14 +353,18 @@ void cyph3r::cifratbash (string palabra, string cifrado, bool minusc, int &contC
         }
              }
                   }
-
+        if (palabra.find_first_not_of(' ') == string::npos) {
+            minusc = false;
+        }
         if (minusc == false){
-            cout << "Ingrese un mensaje en minusculas: " << endl;
+            cout << "Ingrese un mensaje en minusculas, no dejes espacios vacios: " << endl;
             // Solicita nuevamente el mensaje
             getline(cin, palabra);
             }
 
             } while (minusc == false);
+
+
 
             // Personaliza el mensaje segun el metodo elegido
                 if (cifrado == "1"){
@@ -366,15 +374,21 @@ void cyph3r::cifratbash (string palabra, string cifrado, bool minusc, int &contC
                     cout << "Mensaje descifrado: ";
                     contD ++;
                             }
-            // Se utiliza el codigo ASCII para imprimir la letra contraria
-            for (int i = 0; i < palabra.length(); i++) {
-                if(palabra[i] != ' '){
-                    palabra[i] = 'z' - (palabra[i] - 'a');
-                }
-                cout << palabra[i];
-            }
-            cout << "  " << endl; // Mejorar interfaz
+        stringstream ss(palabra);
+        fila.clear();
 
+        while (ss >> ms){
+            fila.push_back(ms);
+        }
+            // Se utiliza el codigo ASCII para imprimir la letra contraria
+            //fila.size es cuantas palabras hay en el vector
+            for (int i = 0; i < fila.size(); i++) {
+                for (int j = 0; j < fila[i].length(); j++) {
+                    fila[i][j] = 'z' - (fila[i][j] - 'a');
+                }
+                cout << fila[i] << " ";
+            }
+                cout << "  " << endl;
 
             if (cifrado == "1") {
                 cout << "Si desea cifrar alguna otra palabra con Atbash ingrese s, sino ingrese cualquier otro caracter: ";
@@ -385,4 +399,5 @@ void cyph3r::cifratbash (string palabra, string cifrado, bool minusc, int &contC
 
         cout << " "<< endl;
 }
+
 }
